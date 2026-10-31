@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlindDubbingStudio — студия озвучки</title>
+<meta name="description" content="BlindDubbingStudio — студия профессиональной озвучки аниме, фильмов, сериалов, игр и роликов.">
+<meta name="theme-color" content="#05030a">
+<meta property="og:title" content="BlindDubbingStudio — студия озвучки">
+<meta property="og:description" content="Профессиональная озвучка аниме, фильмов, сериалов и игр.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Unbounded:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Переменные ===== */
+:root{
+  --bg:#05030a; --bg2:#0a0612;
+  --violet:#8b3dff; --violet-d:#6d28d9;
+  --blue:#2563eb; --blue-l:#3b82f6;
+  --text:#e8e6f0; --muted:#9a94b3;
+  --grad:linear-gradient(90deg,var(--violet),var(--blue-l));
+  --glass:rgba(255,255,255,.04); --border:rgba(139,61,255,.28);
+  --head:'Unbounded','Orbitron',sans-serif; --body:'Inter','Montserrat',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.65;overflow-x:hidden}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%}
+:focus-visible{outline:2px solid var(--blue-l);outline-offset:3px}
+
+/* Скроллбар */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--violet),var(--blue));border-radius:6px}
+html{scrollbar-color:var(--violet) var(--bg)}
+
+/* Свечение за курсором */
+.cursor-glow{position:fixed;left:0;top:0;width:480px;height:480px;margin:-240px 0 0 -240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,61,255,.22),rgba(37,99,235,.08) 45%,transparent 70%);
+  pointer-events:none;z-index:0;transition:transform .15s linear}
+
+/* ===== Интро ===== */
+.intro{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px;pointer-events:all}
+.intro .half{position:absolute;left:0;right:0;height:50%;background:var(--bg);transition:transform .9s cubic-bezier(.77,0,.18,1)}
+.intro .top{top:0}.intro .bot{bottom:0}
+.intro-inner{position:relative;z-index:2;text-align:center;transition:opacity .4s,filter .4s}
+.intro-title{font-family:var(--head);font-weight:800;font-size:clamp(1.3rem,5.2vw,3.2rem);letter-spacing:.04em;white-space:nowrap}
+.intro-title span{display:inline-block;opacity:0;transform:translateY(14px);color:#fff;
+  text-shadow:0 0 12px var(--violet),0 0 28px var(--blue);animation:letter .5s forwards}
+@keyframes letter{to{opacity:1;transform:none}}
+.wave{display:flex;gap:5px;justify-content:center;align-items:center;height:44px;margin-top:26px}
+.wave i{width:4px;height:8px;border-radius:3px;background:var(--grad);animation:eq 0.9s ease-in-out infinite}
+@keyframes eq{0%,100%{height:8px}50%{height:40px}}
+.loadbar{width:min(300px,70vw);height:3px;background:rgba(255,255,255,.08);margin:22px auto 0;border-radius:3px;overflow:hidden}
+.loadbar b{display:block;height:100%;width:0;background:var(--grad);box-shadow:0 0 12px var(--violet);animation:load 2.3s ease-in-out forwards}
+@keyframes load{to{width:100%}}
+.intro.open .intro-inner{opacity:0;filter:blur(8px)}
+.intro.open .top{transform:translateY(-100%)}
+.intro.open .bot{transform:translateY(100%)}
+.intro.done{display:none}
+
+/* ===== Шапка ===== */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,6,18,.55);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav{max-width:1200px;margin:auto;padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--head);font-weight:800;font-size:1rem;display:flex;align-items:center;gap:10px}
+.logo svg{width:28px;height:28px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.menu{display:flex;gap:30px;list-style:none}
+.menu a{color:var(--muted);font-size:.95rem;font-weight:500;position:relative;transition:color .25s}
+.menu a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--grad);transition:width .3s}
+.menu a:hover{color:#fff}.menu a:hover::after{width:100%}
+.burger{display:none;background:none;border:0;width:42px;height:42px;cursor:pointer;position:relative}
+.burger span{position:absolute;left:9px;right:9px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+.burger span:nth-child(1){top:14px}.burger span:nth-child(2){top:20px}.burger span:nth-child(3){top:26px}
+.burger.active span:nth-child(1){top:20px;transform:rotate(45deg)}
+.burger.active span:nth-child(2){opacity:0}
+.burger.active span:nth-child(3){top:20px;transform:rotate(-45deg)}
+
+/* ===== Общее ===== */
+main{position:relative;z-index:1}
+section{padding:110px 24px;position:relative}
+.wrap{max-width:1200px;margin:auto}
+h2{font-family:var(--head);font-weight:600;font-size:clamp(1.6rem,3.6vw,2.5rem);margin-bottom:18px;line-height:1.2}
+.lead{color:var(--muted);max-width:640px;margin-bottom:48px}
+
+/* Кнопки с градиентной обводкой */
+.btn{display:inline-flex;align-items:center;gap:12px;padding:15px 28px;border-radius:14px;font-weight:600;font-size:1rem;
+  position:relative;background:var(--bg2);cursor:pointer;transition:transform .3s,box-shadow .3s;isolation:isolate}
+.btn::before{content:"";position:absolute;inset:0;padding:2px;border-radius:inherit;background:var(--grad);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:-1}
+.btn svg{width:22px;height:22px;fill:currentColor}
+.btn:hover{transform:translateY(-3px);box-shadow:0 0 28px rgba(139,61,255,.55),0 0 50px rgba(37,99,235,.35)}
+.btn.fill{background:var(--grad)}
+.btn.big{padding:20px 38px;font-size:1.15rem}
+
+/* ===== Hero ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding-top:120px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:float 12s ease-in-out infinite;pointer-events:none}
+.orb.a{width:380px;height:380px;background:var(--violet-d);left:-80px;top:15%}
+.orb.b{width:320px;height:320px;background:var(--blue);right:-60px;bottom:10%;animation-delay:-5s}
+@keyframes float{50%{transform:translate(40px,-50px) scale(1.12)}}
+.hero h1{font-family:var(--head);font-weight:800;font-size:clamp(2rem,7.2vw,5.4rem);line-height:1.1;margin-bottom:22px;
+  filter:drop-shadow(0 0 22px rgba(139,61,255,.45));word-break:break-word}
+.hero p{color:var(--muted);font-size:clamp(1rem,2vw,1.25rem);max-width:620px;margin:0 auto 38px}
+.cta{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.eq{position:absolute;left:0;right:0;bottom:0;height:140px;display:flex;align-items:flex-end;justify-content:center;gap:6px;opacity:.55;pointer-events:none}
+.eq i{flex:1;max-width:14px;border-radius:6px 6px 0 0;background:linear-gradient(to top,var(--blue),var(--violet));
+  animation:bar 1.4s ease-in-out infinite;transform-origin:bottom;height:100%;transform:scaleY(.15)}
+@keyframes bar{50%{transform:scaleY(1)}}
+
+/* ===== Карточки ===== */
+.grid{display:grid;gap:24px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:30px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .35s,box-shadow .35s,border-color .35s}
+.card:hover{transform:translateY(-8px);border-color:var(--violet);box-shadow:0 10px 40px rgba(139,61,255,.3),0 0 30px rgba(37,99,235,.2)}
+.icon{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;margin-bottom:20px;background:var(--grad);box-shadow:0 0 22px rgba(139,61,255,.5)}
+.icon svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-family:var(--head);font-weight:600;font-size:1.05rem;margin-bottom:10px}
+.card p{color:var(--muted);font-size:.96rem}
+
+/* О студии */
+.about{display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:center}
+.about p{color:var(--muted);margin-bottom:16px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.stat{text-align:center;padding:24px 14px}
+.stat b{display:block;font-family:var(--head);font-size:1.8rem}
+.stat span{color:var(--muted);font-size:.9rem}
+
+/* Работы */
+.work{padding:0;overflow:hidden;position:relative;aspect-ratio:4/3}
+.work .cover{position:absolute;inset:0;transition:transform .6s}
+.w1 .cover{background:linear-gradient(135deg,#3b1085,#0f2a6b)}
+.w2 .cover{background:linear-gradient(135deg,#1c3f9e,#5b1fb8)}
+.w3 .cover{background:linear-gradient(135deg,#6d28d9,#1e40af)}
+.w4 .cover{background:linear-gradient(135deg,#240a52,#2563eb)}
+.w5 .cover{background:linear-gradient(135deg,#4c1d95,#1e3a8a)}
+.w6 .cover{background:linear-gradient(135deg,#2563eb,#6d28d9)}
+.work .cover::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 3px,transparent 3px 14px);
+  mask-image:linear-gradient(to top,#000,transparent 70%);-webkit-mask-image:linear-gradient(to top,#000,transparent 70%)}
+.work .info{position:absolute;left:0;right:0;bottom:0;padding:22px;background:linear-gradient(to top,rgba(5,3,10,.92),transparent);transition:transform .4s}
+.work h3{font-family:var(--head);font-size:1rem;margin-bottom:4px}
+.work small{color:var(--muted)}
+.work .play{position:absolute;top:50%;left:50%;width:64px;height:64px;margin:-32px;border-radius:50%;background:var(--grad);display:grid;place-items:center;
+  opacity:0;transform:scale(.6);transition:.35s;box-shadow:0 0 30px var(--violet)}
+.work .play svg{width:26px;fill:#fff;margin-left:3px}
+.work:hover .cover{transform:scale(1.12)}
+.work:hover .play{opacity:1;transform:none}
+
+/* Команда */
+.member{text-align:center}
+.avatar{width:104px;height:104px;margin:0 auto 18px;border-radius:50%;padding:3px;background:var(--grad);box-shadow:0 0 26px rgba(139,61,255,.45)}
+.avatar span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--bg2);font-family:var(--head);font-size:1.7rem}
+.role{color:var(--blue-l);font-size:.9rem;font-weight:500}
+
+/* Присоединяйся */
+.join{text-align:center}
+.join .box{border:1px solid var(--border);border-radius:28px;padding:70px 24px;background:radial-gradient(circle at 50% 0,rgba(139,61,255,.22),transparent 65%),var(--glass)}
+.join p{color:var(--muted);max-width:520px;margin:0 auto 36px}
+
+/* Футер */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:40px 24px;background:var(--bg2)}
+.foot{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.foot .soc{display:flex;gap:14px}
+.foot .soc a{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);display:grid;place-items:center;color:var(--muted);transition:.3s}
+.foot .soc a:hover{color:#fff;box-shadow:0 0 20px var(--violet);border-color:var(--violet)}
+.foot svg{width:20px;fill:currentColor}
+.copy{color:var(--muted);font-size:.88rem;width:100%;text-align:center;margin-top:10px}
+
+/* Появление при прокрутке */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease;transition-delay:var(--d,0s)}
+.reveal.show{opacity:1;transform:none}
+body.pre .hero-in{opacity:0;transform:translateY(30px)}
+.hero-in{transition:opacity .9s ease,transform .9s ease;transition-delay:var(--d,0s)}
+
+/* ===== Адаптив ===== */
+@media(max-width:860px){
+  .about{grid-template-columns:1fr}
+  .burger{display:block}
+  .menu{position:fixed;top:68px;left:0;right:0;flex-direction:column;gap:0;background:rgba(10,6,18,.96);backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);max-height:0;overflow:hidden;transition:max-height .4s}
+  .menu.open{max-height:420px}
+  .menu a{display:block;padding:16px 24px}
+  section{padding:80px 20px}
+  .cursor-glow{display:none}
+}
+@media(max-width:480px){.btn{width:100%;justify-content:center}.eq i:nth-child(n+16){display:none}}
+
+/* Уменьшенное движение */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .intro{display:none}
+}
+</style>
+</head>
+<body class="locked pre">
+
+<!-- SVG-спрайт иконок -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="tg" viewBox="0 0 24 24"><path d="M9.8 15.6l-.4 4.1c.6 0 .9-.3 1.2-.6l2.9-2.7 6 4.4c1.1.6 1.9.3 2.2-1L23.9 4.2c.4-1.6-.6-2.2-1.6-1.8L1.4 10.5c-1.5.6-1.5 1.5-.3 1.9l5.3 1.7L18.7 6.3c.6-.4 1.2-.2.7.2z"/></symbol>
+  <symbol id="yt" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></symbol>
+</svg>
+
+<!-- Интро -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="half top"></div><div class="half bot"></div>
+  <div class="intro-inner">
+    <div class="intro-title" id="introTitle"></div>
+    <div class="wave" id="wave"></div>
+    <div class="loadbar"><b></b></div>
+  </div>
+</div>
+
+<div class="cursor-glow" id="glow"></div>
+
+<header>
+  <nav class="nav" aria-label="Главное меню">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
+        <rect x="4" y="12" width="3" height="8" rx="1.5" fill="url(#lg)"/><rect x="10" y="7" width="3" height="18" rx="1.5" fill="url(#lg)"/><rect x="16" y="3" width="3" height="26" rx="1.5" fill="url(#lg)"/><rect x="22" y="9" width="3" height="14" rx="1.5" fill="url(#lg)"/><rect x="28" y="13" width="2" height="6" rx="1" fill="url(#lg)"/></svg>
+      <span class="grad-text">BlindDubbingStudio</span>
+    </a>
+    <ul class="menu" id="menu">
+      <li><a href="#about">О студии</a></li>
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#works">Работы</a></li>
+      <li><a href="#team">Команда</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+    </ul>
+    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="orb a"></div><div class="orb b"></div>
+    <div class="eq" id="eq" aria-hidden="true"></div>
+    <div class="wrap" style="position:relative">
+      <h1 class="grad-text hero-in" style="--d:.1s">BlindDubbingStudio</h1>
+      <p class="hero-in" style="--d:.3s">Профессиональная озвучка, в которой слышно каждую эмоцию. Голоса, которые оживляют историю.</p>
+      <div class="cta hero-in" style="--d:.5s">
+        <a class="btn fill" href="https://t.me/BlindDubbingStudio" target="_blank" rel="noopener noreferrer"><svg><use href="#tg"/></svg>Telegram-канал</a>
+        <a class="btn" href="https://www.youtube.com/channel/UClzcpR1rwcgN6PufVGRWNQQ" target="_blank" rel="noopener noreferrer"><svg><use href="#yt"/></svg>YouTube-канал</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- О студии -->
+  <section id="about">
+    <div class="wrap about">
+      <div class="reveal">
+        <h2 class="grad-text">О студии</h2>
+        <p>BlindDubbingStudio — команда актёров озвучки и звукорежиссёров. Мы озвучиваем аниме, фильмы, сериалы, игры и ролики, чтобы зритель слышал историю так, как её задумали авторы.</p>
+        <p>Мы работаем над живой интонацией, точной синхронизацией с картинкой и чистым звуком. Каждый проект проходит запись, сведение и проверку командой.</p>
+      </div>
+      <div class="stats reveal" style="--d:.15s">
+        <div class="card stat"><b class="grad-text">Аниме</b><span>озвучка</span></div>
+        <div class="card stat"><b class="grad-text">Кино</b><span>и сериалы</span></div>
+        <div class="card stat"><b class="grad-text">Игры</b><span>и ролики</span></div>
+        <div class="card stat"><b class="grad-text">Звук</b><span>сведение</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Услуги -->
+  <section id="services">
+    <div class="wrap">
+      <h2 class="grad-text reveal">Услуги</h2>
+      <p class="lead reveal">Полный цикл работы со звуком: от подбора голосов до готового микса.</p>
+      <div class="grid g3">
+        <article class="card reveal"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg></div><h3>Озвучка аниме</h3><p>Эмоциональная русская озвучка с сохранением характера героев.</p></article>
+        <article class="card reveal" style="--d:.08s"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div><h3>Фильмы и сериалы</h3><p>Многоголосая озвучка и работа с репликами для кино и телевидения.</p></article>
+        <article class="card reveal" style="--d:.16s"><div class="icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.5 12.5h5M16 11h.01M18 14h.01"/></svg></div><h3>Озвучка игр</h3><p>Голоса персонажей, диалоги и реплики для игровых проектов.</p></article>
+        <article class="card reveal"><div class="icon"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><h3>Закадровый голос</h3><p>Диктор для рекламы, документальных фильмов и обучающих видео.</p></article>
+        <article class="card reveal" style="--d:.08s"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 8h10M4 12h16M4 16h8M17 6l3 2-3 2"/></svg></div><h3>Дубляж</h3><p>Точная синхронизация речи с артикуляцией персонажей на экране.</p></article>
+        <article class="card reveal" style="--d:.16s"><div class="icon"><svg viewBox="0 0 24 24"><path d="M5 4v16M12 4v16M19 4v16M3 9h4M10 14h4M17 8h4"/></svg></div><h3>Работа со звуком</h3><p>Сведение, очистка записи от шумов и мастеринг готового трека.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Работы -->
+  <section id="works">
+    <div class="wrap">
+      <h2 class="grad-text reveal">Работы</h2>
+      <p class="lead reveal">Избранные проекты студии. Новые релизы выходят в наших каналах.</p>
+      <div class="grid g3">
+        <article class="card work w1 reveal"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 1»</h3><small>Аниме · озвучка</small></div></article>
+        <article class="card work w2 reveal" style="--d:.08s"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 2»</h3><small>Сериал · многоголосая</small></div></article>
+        <article class="card work w3 reveal" style="--d:.16s"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 3»</h3><small>Игра · персонажи</small></div></article>
+        <article class="card work w4 reveal"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 4»</h3><small>Фильм · дубляж</small></div></article>
+        <article class="card work w5 reveal" style="--d:.08s"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 5»</h3><small>Ролик · закадровый голос</small></div></article>
+        <article class="card work w6 reveal" style="--d:.16s"><div class="cover"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="info"><h3>Проект «Название 6»</h3><small>Аниме · озвучка</small></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Команда -->
+  <section id="team">
+    <div class="wrap">
+      <h2 class="grad-text reveal">Команда</h2>
+      <p class="lead reveal">Люди, чьими голосами и руками создаются наши проекты.</p>
+      <div class="grid g3">
+        <article class="card member reveal"><div class="avatar"><span>А</span></div><h3>Имя Участника</h3><div class="role">Руководитель студии</div></article>
+        <article class="card member reveal" style="--d:.08s"><div class="avatar"><span>Б</span></div><h3>Имя Участника</h3><div class="role">Актёр озвучки</div></article>
+        <article class="card member reveal" style="--d:.16s"><div class="avatar"><span>В</span></div><h3>Имя Участника</h3><div class="role">Актриса озвучки</div></article>
+        <article class="card member reveal"><div class="avatar"><span>Г</span></div><h3>Имя Участника</h3><div class="role">Звукорежиссёр</div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Присоединяйся -->
+  <section id="contacts" class="join">
+    <div class="wrap">
+      <div class="box reveal">
+        <h2 class="grad-text">Присоединяйся</h2>
+        <p>Следи за новыми релизами в Telegram и смотри готовые работы на YouTube.</p>
+        <div class="cta">
+          <a class="btn big fill" href="https://t.me/BlindDubbingStudio" target="_blank" rel="noopener noreferrer"><svg><use href="#tg"/></svg>Telegram</a>
+          <a class="btn big" href="https://www.youtube.com/channel/UClzcpR1rwcgN6PufVGRWNQQ" target="_blank" rel="noopener noreferrer"><svg><use href="#yt"/></svg>YouTube</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <strong class="grad-text" style="font-family:var(--head)">BlindDubbingStudio</strong>
+    <div class="soc">
+      <a href="https://t.me/BlindDubbingStudio" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24"><use href="#tg"/></svg></a>
+      <a href="https://www.youtube.com/channel/UClzcpR1rwcgN6PufVGRWNQQ" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg viewBox="0 0 24 24"><use href="#yt"/></svg></a>
+    </div>
+    <p class="copy">© <span id="year">2026</span> BlindDubbingStudio. Все права защищены.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var body = document.body, intro = document.getElementById('intro');
+
+  // Эквалайзер в hero и в интро
+  var eq = document.getElementById('eq');
+  for (var i = 0; i < 48; i++) {
+    var b = document.createElement('i');
+    b.style.animationDelay = (-Math.random() * 1.4).toFixed(2) + 's';
+    b.style.animationDuration = (0.9 + Math.random() * 1.1).toFixed(2) + 's';
+    eq.appendChild(b);
+  }
+  var wave = document.getElementById('wave');
+  for (var j = 0; j < 24; j++) {
+    var w = document.createElement('i');
+    w.style.animationDelay = (j * 0.06).toFixed(2) + 's';
+    wave.appendChild(w);
+  }
+
+  // Появление блоков при прокрутке
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // Каскад контента после интро
+  function reveal(){ body.classList.remove('locked', 'pre'); }
+
+  if (reduce) {
+    intro.className = 'intro done'; reveal();
+  } else {
+    // Название по буквам
+    var title = document.getElementById('introTitle');
+    'BlindDubbingStudio'.split('').forEach(function(ch, k){
+      var s = document.createElement('span');
+      s.textContent = ch; s.style.animationDelay = (0.2 + k * 0.1) + 's';
+      title.appendChild(s);
+    });
+    setTimeout(function(){ intro.classList.add('open'); }, 2800);   // разъезд половин
+    setTimeout(reveal, 3100);                                      // каскад контента
+    setTimeout(function(){ intro.classList.add('done'); }, 3800);  // общая длительность ~3.3 c
+  }
+
+  // Бургер-меню
+  var burger = document.getElementById('burger'), menu = document.getElementById('menu');
+  function toggle(open){
+    burger.classList.toggle('active', open); menu.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+  }
+  burger.addEventListener('click', function(){ toggle(!menu.classList.contains('open')); });
+  menu.addEventListener('click', function(e){ if (e.target.tagName === 'A') toggle(false); });
+
+  // Свечение за курсором
+  var glow = document.getElementById('glow');
+  if (!reduce && window.matchMedia('(pointer:fine)').matches) {
+    window.addEventListener('mousemove', function(e){
+      glow.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+    });
+    // Лёгкий параллакс сфер
+    var orbs = document.querySelectorAll('.orb');
+    window.addEventListener('scroll', function(){
+      var y = window.scrollY;
+      orbs.forEach(function(o, n){ o.style.marginTop = (y * (n ? -0.12 : 0.15)) + 'px'; });
+    }, { passive: true });
+  }
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>

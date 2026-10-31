@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DataStart — первый учебный проект по анализу данных и ИИ</title>
+  <meta name="description" content="DataStart — учебный лендинг для студентов без опыта: что такое анализ данных, машинное обучение и нейросети, и как выбрать свой первый учебный проект.">
+
+  <style>
+    /* ========== 1. Переменные темы (цвета, радиусы, тени) ========== */
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --text: #1b2333;
+      --muted: #4a5568;          /* контраст с белым > 7:1 */
+      --primary: #2f4fd8;        /* основной акцент */
+      --primary-dark: #2239a8;
+      --accent: #0f8a6a;         /* второй акцент */
+      --warm: #b45309;           /* третий акцент */
+      --border: #dde3ef;
+      --radius: 16px;
+      --shadow: 0 6px 24px rgba(30, 45, 90, 0.08);
+      --header-h: 64px;          /* высота шапки — используется в scroll-margin-top */
+    }
+
+    /* ========== 2. Базовые стили ========== */
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;   /* плавная прокрутка к якорям */
+      scroll-padding-top: var(--header-h);
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;        /* страховка от горизонтальной прокрутки */
+    }
+
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 .5em; }
+    h1 { font-size: clamp(2rem, 6vw, 3.4rem); }
+    h2 { font-size: clamp(1.6rem, 4vw, 2.3rem); }
+    h3 { font-size: 1.25rem; }
+    p  { margin: 0 0 1em; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid var(--warm);
+      outline-offset: 3px;
+    }
+
+    .container { width: min(1100px, 100% - 2rem); margin-inline: auto; }
+
+    /* Секции: scroll-margin-top, чтобы шапка не перекрывала заголовок */
+    section { padding: 4rem 0; scroll-margin-top: var(--header-h); }
+    .section-lead { color: var(--muted); max-width: 680px; margin-bottom: 2rem; }
+
+    /* ========== 3. Шапка и навигация ========== */
+    .site-header {
+      position: sticky; top: 0; z-index: 10;
+      height: var(--header-h);
+      background: rgba(255, 255, 255, .95);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header .container {
+      height: 100%;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .logo { font-weight: 800; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
+    .nav { display: flex; gap: .25rem; flex-wrap: wrap; justify-content: flex-end; }
+    .nav a {
+      color: var(--text); text-decoration: none;
+      padding: .4rem .7rem; border-radius: 999px; font-size: .95rem;
+    }
+    .nav a:hover { background: #e8edfb; }
+
+    /* ========== 4. Кнопки ========== */
+    .btn {
+      display: inline-block; border: 0; cursor: pointer;
+      background: var(--primary); color: #fff;
+      padding: .85rem 1.6rem; border-radius: 999px;
+      font: inherit; font-weight: 700; text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: background .2s, transform .2s;
+    }
+    .btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-secondary { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; }
+    .btn-secondary:hover { background: #e8edfb; }
+
+    /* ========== 5. Hero ========== */
+    .hero {
+      padding: 5rem 0 4rem;
+      background: linear-gradient(135deg, #e6ecff 0%, #e3f6ef 100%);
+    }
+    .hero p { font-size: 1.2rem; color: var(--muted); max-width: 640px; }
+    .hero .tag {
+      display: inline-block; background: #fff; color: var(--accent);
+      font-weight: 700; padding: .3rem .9rem; border-radius: 999px;
+      margin-bottom: 1rem; font-size: .9rem; border: 1px solid var(--border);
+    }
+    .hero-actions { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+    /* ========== 6. Карточки (общий стиль) ========== */
+    .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem;
+    }
+    .card .emoji { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .card ul { padding-left: 1.2rem; margin: 0 0 1em; color: var(--muted); }
+    .meta { font-size: .95rem; color: var(--muted); }
+
+    .badge {
+      display: inline-block; padding: .2rem .7rem; border-radius: 999px;
+      font-size: .85rem; font-weight: 700; color: #fff; margin-bottom: .6rem;
+    }
+    .lvl-1 { background: var(--accent); }
+    .lvl-2 { background: var(--primary); }
+    .lvl-3 { background: var(--warm); }
+
+    /* Блок мифов */
+    .myth { border-left: 5px solid var(--primary); }
+    .myth h3 { color: var(--text); }
+
+    /* Подсветка рекомендованного проекта после теста */
+    .project.recommended {
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 0 6px rgba(47, 79, 216, .15), var(--shadow);
+    }
+
+    /* ========== 7. Мини-тест ========== */
+    .quiz { max-width: 760px; }
+    .quiz-progress { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 1rem; }
+    .quiz-progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+    .options { display: grid; gap: .7rem; margin: 1rem 0 1.5rem; }
+    .option {
+      text-align: left; font: inherit; cursor: pointer;
+      background: #fff; color: var(--text);
+      border: 2px solid var(--border); border-radius: 12px; padding: .9rem 1rem;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option[aria-pressed="true"] { border-color: var(--primary); background: #e8edfb; font-weight: 600; }
+    .quiz-nav { display: flex; gap: .8rem; flex-wrap: wrap; }
+    .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
+    .result { background: #e3f6ef; border-radius: var(--radius); padding: 1.5rem; border: 1px solid var(--accent); }
+    [hidden] { display: none !important; }
+
+    /* ========== 8. Футер ========== */
+    .site-footer { background: #1b2333; color: #e6e9f2; padding: 2.5rem 0; }
+    .site-footer p { max-width: 760px; }
+    .site-footer a { color: #b9c8ff; }
+
+    /* ========== 9. Адаптивность ========== */
+    @media (max-width: 640px) {
+      :root { --header-h: 104px; }            /* шапка выше, когда меню переносится */
+      .site-header .container { flex-direction: column; justify-content: center; gap: .2rem; }
+      .nav { justify-content: center; }
+      .nav a { padding: .3rem .55rem; font-size: .88rem; }
+      section { padding: 3rem 0; }
+      .hero { padding: 3rem 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== Шапка с якорным меню ===== -->
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="#top">DataStart</a>
+      <nav class="nav" aria-label="Навигация по странице">
+        <a href="#about">Направления</a>
+        <a href="#myths">Страхи</a>
+        <a href="#projects">Проекты</a>
+        <a href="#quiz">Тест</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== Блок 1. Hero ===== -->
+    <section class="hero" id="top">
+      <div class="container">
+        <span class="tag">Для тех, кто ещё не писал код</span>
+        <h1>Первый шаг в данные и ИИ — без паники</h1>
+        <p>DataStart помогает студентам без опыта разобраться, чем отличаются анализ данных, машинное обучение и нейросети, и выбрать посильный учебный проект. Потребуется время и практика, но начать можно с малого.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#projects">Выбрать первый проект</a>
+          <a class="btn btn-secondary" href="#quiz">Пройти мини-тест</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Блок 2. Направления ===== -->
+    <section id="about">
+      <div class="container">
+        <h2>Что такое прикладной ИИ и анализ данных</h2>
+        <p class="section-lead">Если совсем просто: это способы находить закономерности в информации и использовать их для решения задач. Вот три основные точки входа.</p>
+        <div class="grid">
+          <article class="card">
+            <span class="emoji" aria-hidden="true">📊</span>
+            <h3>Анализ данных</h3>
+            <p>Собираем таблицы, очищаем их, считаем показатели и строим графики, чтобы ответить на вопрос.</p>
+            <ul><li>Инструменты: таблицы, Python</li><li>Математика: базовая статистика</li></ul>
+            <p class="meta"><strong>Порог входа:</strong> низкий</p>
+          </article>
+          <article class="card">
+            <span class="emoji" aria-hidden="true">🧮</span>
+            <h3>Машинное обучение</h3>
+            <p>Программа учится находить закономерности на примерах и делает прогнозы для новых данных.</p>
+            <ul><li>Инструменты: Python, готовые библиотеки</li><li>Математика: понадобится постепенно</li></ul>
+            <p class="meta"><strong>Порог входа:</strong> средний</p>
+          </article>
+          <article class="card">
+            <span class="emoji" aria-hidden="true">🧠</span>
+            <h3>Нейросети</h3>
+            <p>Особый вид моделей, который работает с текстом, изображениями и звуком. Новичкам проще начинать с готовых моделей.</p>
+            <ul><li>Инструменты: Python, открытые модели</li><li>Математика: можно отложить на потом</li></ul>
+            <p class="meta"><strong>Порог входа:</strong> выше среднего</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Блок 3. Мифы и страхи ===== -->
+    <section id="myths">
+      <div class="container">
+        <h2>Мифы и страхи новичка</h2>
+        <p class="section-lead">Сомнения в начале пути нормальны. Разберём самые частые честно.</p>
+        <div class="grid">
+          <article class="card myth">
+            <h3>«Без сильной математики нечего и начинать»</h3>
+            <p>Для первых проектов достаточно школьной арифметики и понимания среднего значения и процентов. Остальное осваивается по мере необходимости.</p>
+          </article>
+          <article class="card myth">
+            <h3>«Нужно уметь программировать заранее»</h3>
+            <p>Нет, начать можно с нуля. Но привыкать к коду придётся: первые недели будут казаться неудобными, и это нормально.</p>
+          </article>
+          <article class="card myth">
+            <h3>«Нужен мощный компьютер»</h3>
+            <p>Для учебных проектов из этой страницы хватит обычного ноутбука с доступом в интернет. Платные сервисы и API не нужны.</p>
+          </article>
+          <article class="card myth">
+            <h3>«Если не получилось сразу — это не моё»</h3>
+            <p>Ошибки в коде встречаются у всех, в том числе у опытных специалистов. Умение искать причину ошибки и есть часть навыка.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Блок 4. Проекты ===== -->
+    <section id="projects">
+      <div class="container">
+        <h2>Выбери свой первый проект</h2>
+        <p class="section-lead">Три учебных проекта разной сложности. Время указано ориентировочно и зависит от вашей подготовки и темпа.</p>
+        <div class="grid">
+          <article class="card project" id="project-a">
+            <span class="badge lvl-1">Уровень 1 · лёгкий</span>
+            <h3>📊 Анализ открытого датасета</h3>
+            <p>Берём любой открытый набор данных (например, о погоде или населении), очищаем его и отвечаем на 2–3 вопроса с помощью графиков.</p>
+            <p class="meta"><strong>Время:</strong> примерно 8–15 часов</p>
+            <ul><li>Работа с таблицами</li><li>Простые графики</li><li>Основы Python (pandas)</li></ul>
+          </article>
+          <article class="card project" id="project-b">
+            <span class="badge lvl-2">Уровень 2 · средний</span>
+            <h3>💬 Чат-бот на готовой модели</h3>
+            <p>Подключаем открытую языковую модель, работающую локально, и делаем простого помощника с понятными правилами общения.</p>
+            <p class="meta"><strong>Время:</strong> примерно 15–25 часов</p>
+            <ul><li>Основы Python</li><li>Работа с текстом</li><li>Установка и запуск готовых моделей</li></ul>
+          </article>
+          <article class="card project" id="project-c">
+            <span class="badge lvl-3">Уровень 3 · сложнее</span>
+            <h3>🖼️ Распознавание изображений</h3>
+            <p>Берём готовую предобученную модель и проверяем, как она определяет объекты на ваших фотографиях. Разбираем, где она ошибается.</p>
+            <p class="meta"><strong>Время:</strong> примерно 20–35 часов</p>
+            <ul><li>Python и библиотеки</li><li>Работа с изображениями</li><li>Оценка качества модели</li></ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Блок 5. Мини-тест (только локальный JS) ===== -->
+    <section id="quiz">
+      <div class="container quiz">
+        <h2>Мини-тест: какой проект подойдёт тебе</h2>
+        <p class="section-lead">Четыре вопроса. Ответы обрабатываются только в вашем браузере и никуда не отправляются.</p>
+
+        <div class="card">
+          <div class="quiz-progress" aria-hidden="true"><span id="progress"></span></div>
+          <div id="quiz-body">
+            <p class="meta" id="quiz-step"></p>
+            <h3 id="quiz-question"></h3>
+            <div class="options" id="quiz-options"></div>
+            <div class="quiz-nav">
+              <button class="btn btn-secondary" id="btn-back" type="button">Назад</button>
+              <button class="btn" id="btn-next" type="button" disabled>Далее</button>
+            </div>
+          </div>
+
+          <div class="result" id="quiz-result" hidden aria-live="polite">
+            <h3 id="result-title"></h3>
+            <p id="result-text"></p>
+            <div class="quiz-nav">
+              <a class="btn" id="result-link" href="#projects">Посмотреть проект</a>
+              <button class="btn btn-secondary" id="btn-restart" type="button">Пройти заново</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Блок 6. Футер ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Учебный демонстрационный проект.</strong> Эта страница создана в образовательных целях и не является коммерческим предложением, курсом или рекламой. Здесь нет регистрации, сбора данных и обещаний результата.</p>
+      <p><a href="#top">↑ Наверх</a></p>
+    </div>
+  </footer>
+
+  <script>
+    /* ===== Мини-тест: данные вопросов =====
+       Каждый вариант добавляет баллы проектам: A — анализ данных,
+       B — чат-бот, C — распознавание изображений. */
+    const questions = [
+      {
+        text: "Что тебе кажется интереснее всего?",
+        options: [
+          { label: "Находить закономерности в таблицах и рисовать графики", score: "A" },
+          { label: "Общаться с программой и учить её отвечать", score: "B" },
+          { label: "Смотреть, как компьютер «видит» картинки", score: "C" }
+        ]
+      },
+      {
+        text: "Как ты относишься к математике?",
+        options: [
+          { label: "Опасаюсь её и хочу начать мягко", score: "A" },
+          { label: "Нормально, готов(а) разбираться понемногу", score: "B" },
+          { label: "Не боюсь, любопытно копнуть глубже", score: "C" }
+        ]
+      },
+      {
+        text: "Сколько времени в неделю можешь уделять проекту?",
+        options: [
+          { label: "2–3 часа", score: "A" },
+          { label: "4–6 часов", score: "B" },
+          { label: "Больше 6 часов", score: "C" }
+        ]
+      },
+      {
+        text: "Какой результат тебя порадует больше всего?",
+        options: [
+          { label: "Понятный отчёт с выводами и графиками", score: "A" },
+          { label: "Работающий помощник, с которым можно поговорить", score: "B" },
+          { label: "Наглядная демонстрация с примерами и ошибками модели", score: "C" }
+        ]
+      }
+    ];
+
+    /* Тексты результатов */
+    const results = {
+      A: { title: "Тебе подойдёт: анализ открытого датасета", text: "Это самый мягкий старт: минимум теории, быстрый видимый результат и возможность освоиться с Python без спешки.", id: "project-a" },
+      B: { title: "Тебе подойдёт: чат-бот на готовой модели", text: "Проект даёт баланс между кодом и творчеством. Нужно будет разобраться с установкой и работой с текстом, но сложной математики не потребуется.", id: "project-b" },
+      C: { title: "Тебе подойдёт: распознавание изображений", text: "Проект сложнее, но наглядный. Если времени мало, можно начать с первого проекта и вернуться к этому позже.", id: "project-c" }
+    };
+
+    /* ===== Состояние теста ===== */
+    let current = 0;          // номер текущего вопроса
+    const answers = [];       // выбранные варианты (индексы)
+
+    /* Ссылки на элементы страницы */
+    const elStep = document.getElementById("quiz-step");
+    const elQuestion = document.getElementById("quiz-question");
+    const elOptions = document.getElementById("quiz-options");
+    const elProgress = document.getElementById("progress");
+    const btnNext = document.getElementById("btn-next");
+    const btnBack = document.getElementById("btn-back");
+    const elBody = document.getElementById("quiz-body");
+    const elResult = document.getElementById("quiz-result");
+
+    /* Отрисовка текущего вопроса */
+    function renderQuestion() {
+      const q = questions[current];
+      elStep.textContent = "Вопрос " + (current + 1) + " из " + questions.length;
+      elQuestion.textContent = q.text;
+      elProgress.style.width = (current / questions.length * 100) + "%";
+      elOptions.innerHTML = "";
+
+      q.options.forEach(function (opt, i) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "option";
+        b.textContent = opt.label;
+        b.setAttribute("aria-pressed", answers[current] === i ? "true" : "false");
+        b.addEventListener("click", function () {
+          answers[current] = i;
+          renderQuestion();
+        });
+        elOptions.appendChild(b);
+      });
+
+      btnNext.disabled = answers[current] === undefined;
+      btnNext.textContent = current === questions.length - 1 ? "Показать результат" : "Далее";
+      btnBack.hidden = current === 0;
+    }
+
+    /* Подсчёт баллов и показ результата */
+    function showResult() {
+      const total = { A: 0, B: 0, C: 0 };
+      answers.forEach(function (ans, qi) {
+        total[questions[qi].options[ans].score]++;
+      });
+      /* Побеждает проект с наибольшим числом баллов; при равенстве — более лёгкий */
+      let best = "A";
+      ["B", "C"].forEach(function (k) { if (total[k] > total[best]) best = k; });
+
+      const r = results[best];
+      document.getElementById("result-title").textContent = r.title;
+      document.getElementById("result-text").textContent = r.text;
+      document.getElementById("result-link").setAttribute("href", "#" + r.id);
+
+      /* Подсветить карточку рекомендованного проекта */
+      document.querySelectorAll(".project").forEach(function (p) {
+        p.classList.toggle("recommended", p.id === r.id);
+      });
+
+      elProgress.style.width = "100%";
+      elBody.hidden = true;
+      elResult.hidden = false;
+    }
+
+    /* Обработчики кнопок */
+    btnNext.addEventListener("click", function () {
+      if (current < questions.length - 1) { current++; renderQuestion(); }
+      else { showResult(); }
+    });
+    btnBack.addEventListener("click", function () {
+      if (current > 0) { current--; renderQuestion(); }
+    });
+    document.getElementById("btn-restart").addEventListener("click", function () {
+      current = 0;
+      answers.length = 0;
+      document.querySelectorAll(".project").forEach(function (p) { p.classList.remove("recommended"); });
+      elResult.hidden = true;
+      elBody.hidden = false;
+      renderQuestion();
+    });
+
+    /* Запуск */
+    renderQuestion();
+  </script>
+</body>
+</html>
