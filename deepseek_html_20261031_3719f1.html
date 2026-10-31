@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataStart — учебный лендинг: выбери первый проект в ИИ и анализе данных</title>
+  <meta name="description" content="Учебный демонстрационный лендинг для новичков: простые объяснения прикладного ИИ, анализ данных, машинное обучение, нейросети. Мини-тест помогает выбрать первый учебный проект.">
+  <style>
+    /* ============ БАЗОВЫЕ СТИЛИ И ПЕРЕМЕННЫЕ ============ */
+    :root {
+      --bg: #fffaf5;
+      --surface: #ffffff;
+      --text: #1c1917;
+      --text-soft: #57534e;
+      --accent1: #dc2626;   /* красный */
+      --accent2: #ea580c;   /* оранжевый */
+      --accent3: #f97316;   /* светлый оранжевый */
+      --accent-gradient: linear-gradient(120deg, var(--accent1), var(--accent3));
+      --accent-glow: rgba(234, 88, 12, 0.18);
+      --border: #f0e0d6;
+      --shadow: 0 4px 14px rgba(220, 38, 38, 0.1);
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Учитываем фиксированную шапку при переходе по якорям */
+    section[id] {
+      scroll-margin-top: 84px;
+    }
+
+    /* ============ ШАПКА / НАВИГАЦИЯ ============ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 250, 245, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-decoration: none;
+    }
+    .logo span { color: inherit; }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.1rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent1);
+      border-bottom-color: var(--accent1);
+      outline: none;
+    }
+
+    /* ============ ОБЩИЕ КОНТЕЙНЕРЫ ============ */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    section {
+      padding: 3.5rem 0;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-lead {
+      color: var(--text-soft);
+      max-width: 65ch;
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      padding: 4rem 0 3.5rem;
+      background: linear-gradient(125deg, #fecaca 0%, #fff1e6 52%, #fed7aa 100%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      max-width: 22ch;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 60ch;
+      color: var(--text-soft);
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent-gradient);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.85rem 1.7rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(220, 38, 38, 0.28);
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(234, 88, 12, 0.35);
+      outline: none;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--accent1);
+      border: 2px solid var(--accent1);
+      box-shadow: none;
+    }
+    .btn-secondary:hover,
+    .btn-secondary:focus-visible {
+      background: linear-gradient(135deg, #fff1f2, #ffedd5);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      filter: none;
+    }
+
+    /* ============ КАРТОЧКИ НАПРАВЛЕНИЙ ============ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 26px var(--accent-glow);
+    }
+
+    .card .icon {
+      font-size: 1.9rem;
+      line-height: 1;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      color: var(--text-soft);
+      font-size: 0.97rem;
+    }
+
+    .tag {
+      align-self: flex-start;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      margin-top: auto;
+    }
+    .tag-easy { background: #ffedd5; color: #9a3412; }
+    .tag-mid  { background: #fee2e2; color: #991b1b; }
+    .tag-hard { background: #fef3c7; color: #92400e; }
+
+    /* ============ МИФЫ ============ */
+    .myths-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .myth {
+      background: var(--surface);
+      border-left: 4px solid var(--accent2);
+      border-radius: 12px;
+      padding: 1.3rem 1.4rem;
+      box-shadow: var(--shadow);
+    }
+
+    .myth .myth-q {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .myth .myth-a {
+      color: var(--text-soft);
+      font-size: 0.97rem;
+    }
+
+    /* ============ ПРОЕКТЫ ============ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .project:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Подсветка выбранного тестом проекта */
+    .project.highlight {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow);
+    }
+
+    .project .badge {
+      position: absolute;
+      top: -0.7rem;
+      right: 1rem;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.7rem;
+      border-radius: 999px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .project.highlight .badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .project h3 {
+      font-size: 1.15rem;
+    }
+
+    .project .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .project .meta span {
+      background: #fff1e6;
+      padding: 0.15rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .project p {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      flex: 1;
+    }
+
+    .project .skills {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      border-top: 1px dashed var(--border);
+      padding-top: 0.7rem;
+    }
+    .project .skills strong {
+      color: var(--text);
+    }
+
+    /* ============ ТЕСТ ============ */
+    .quiz-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem 1.5rem;
+      box-shadow: var(--shadow);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .quiz-step {
+      margin-bottom: 1.6rem;
+    }
+
+    .quiz-question {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .quiz-options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      background: #fffaf5;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.97rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .quiz-options label:hover {
+      border-color: var(--accent2);
+      background: linear-gradient(135deg, #fff1f2, #fff7ed);
+    }
+
+    .quiz-options input[type="radio"] {
+      accent-color: var(--accent1);
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+    }
+
+    .quiz-options input[type="radio"]:checked + span {
+      font-weight: 600;
+    }
+
+    .quiz-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    /* ============ ФУТЕР ============ */
+    footer {
+      background: #1c1917;
+      color: #d6d3d1;
+      padding: 2.5rem 0 2rem;
+      font-size: 0.92rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    footer p {
+      max-width: 55ch;
+      color: #a8a29e;
+    }
+
+    footer a {
+      color: #fdba74;
+      text-decoration: none;
+    }
+    footer a:hover,
+    footer a:focus-visible {
+      text-decoration: underline;
+    }
+
+    .to-top {
+      display: inline-block;
+      background: #292524;
+      color: #fed7aa;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .to-top:hover,
+    .to-top:focus-visible {
+      background: #44403c;
+      text-decoration: none;
+    }
+
+    /* ============ МЕДИАЗАПРОСЫ ============ */
+    @media (max-width: 640px) {
+      body { font-size: 16px; }
+      .nav-wrap { padding: 0.6rem 1rem; }
+      .nav-links { gap: 0.2rem 0.8rem; }
+      .nav-links a { font-size: 0.88rem; }
+      section { padding: 2.5rem 0; }
+      .hero { padding: 2.8rem 0 2.5rem; }
+      .quiz-box { padding: 1.3rem 1.1rem; }
+      .footer-inner { flex-direction: column; }
+    }
+
+    /* Доступность: видимый фокус */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--accent2);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ ШАПКА С НАВИГАЦИЕЙ ============ -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="#hero" class="logo">Data<span>Start</span></a>
+      <nav aria-label="Основная навигация">
+        <ul class="nav-links">
+          <li><a href="#about">С чего начать</a></li>
+          <li><a href="#myths">Мифы</a></li>
+          <li><a href="#projects">Проекты</a></li>
+          <li><a href="#quiz">Мини-тест</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO-БЛОК ============ -->
+  <section id="hero" class="hero">
+    <div class="container">
+      <span class="hero-badge">Учебный демонстрационный проект</span>
+      <h1>Первый шаг в <em>данные и ИИ</em> — без страха и «сложной математики»</h1>
+      <p>
+        Здесь вы простыми словами узнаете, чем отличаются анализ данных, машинное обучение
+        и нейросети, разберёте частые страхи новичка и выберете свой первый учебный проект.
+        Потребуется время и практика — но начать можно с понятных шагов.
+      </p>
+      <a href="#quiz" class="btn">Выбрать первый проект</a>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 1: ЧТО ТАКОЕ ПРИКЛАДНОЙ ИИ ============ -->
+  <section id="about">
+    <div class="container">
+      <h2>Что такое прикладной ИИ и анализ данных</h2>
+      <p class="section-lead">
+        Прикладной ИИ — это применение готовых методов и инструментов к реальным задачам:
+        от таблиц с продажами до распознавания объектов на фото. Не нужно изобретать
+        алгоритмы с нуля — важно понимать, какую задачу вы решаете и какие данные есть.
+      </p>
+
+      <div class="cards-grid">
+        <!-- Анализ данных -->
+        <article class="card">
+          <span class="icon" aria-hidden="true">📊</span>
+          <h3>Анализ данных</h3>
+          <p>
+            Работа с таблицами и графиками: находить закономерности, проверять гипотезы,
+            отвечать на вопросы «что произошло и почему». Часто начинается с Excel или
+            Python-библиотек вроде pandas.
+          </p>
+          <span class="tag tag-easy">Старт: низкий порог входа</span>
+        </article>
+
+        <!-- Машинное обучение -->
+        <article class="card">
+          <span class="icon" aria-hidden="true">🤖</span>
+          <h3>Машинное обучение</h3>
+          <p>
+            Модели, которые учатся на примерах: предсказать цену, определить категорию
+            письма. Нужно немного базовой математики и аккуратность в подготовке данных.
+          </p>
+          <span class="tag tag-mid">Старт: средний, нужна практика</span>
+        </article>
+
+        <!-- Нейросети -->
+        <article class="card">
+          <span class="icon" aria-hidden="true">🧠</span>
+          <h3>Нейросети</h3>
+          <p>
+            Гибкие модели для изображений, текста и звука. Часто используются готовые
+            модели, поэтому не обязательно обучать свою сеть с нуля — можно начать с
+            применения.
+          </p>
+          <span class="tag tag-hard">Старт: выше среднего, но есть готовые инструменты</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 2: МИФЫ И СТРАХИ ============ -->
+  <section id="myths">
+    <div class="container">
+      <h2>Мифы и страхи новичка</h2>
+      <p class="section-lead">
+        Эти опасения знакомы почти всем, кто начинает. Разберём их честно и без давления.
+      </p>
+
+      <div class="myths-list">
+        <div class="myth">
+          <div class="myth-q">«Нужно отлично знать математику»</div>
+          <div class="myth-a">
+            Для первых учебных проектов достаточно базовой арифметики, процентов и
+            умения читать графики. Более сложные темы можно подтягивать постепенно,
+            по мере необходимости — это нормальный путь.
+          </div>
+        </div>
+
+        <div class="myth">
+          <div class="myth-q">«Это только для программистов с опытом»</div>
+          <div class="myth-a">
+            Многие инструменты анализа данных рассчитаны на новичков: таблицы, готовые
+            библиотеки, конструкторы. Начинать можно с небольших задач и постепенно
+            добавлять код.
+          </div>
+        </div>
+
+        <div class="myth">
+          <div class="myth-q">«У меня не получится, я уже пробовал»</div>
+          <div class="myth-a">
+            Ошибки и тупики — часть обучения. Если двигаться маленькими шагами и
+            выбирать проекты по силам, прогресс становится заметным. Потребуется время
+            и практика, но это реалистично.
+          </div>
+        </div>
+
+        <div class="myth">
+          <div class="myth-q">«Без дорогих курсов ничего не выйдет»</div>
+          <div class="myth-a">
+            Существует много открытых учебных материалов и бесплатных датасетов.
+            Для старта не обязательны платные программы — важнее регулярная практика
+            и понятная цель.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 3: ПРОЕКТЫ ============ -->
+  <section id="projects">
+    <div class="container">
+      <h2>Выбери свой первый проект</h2>
+      <p class="section-lead">
+        Три учебных проекта разной сложности. Оценка времени — ориентировочная и зависит
+        от вашей подготовки и темпа. Для проектов не нужны платные API.
+      </p>
+
+      <div class="projects-grid">
+        <!-- Проект 1 -->
+        <article class="project" id="project-1">
+          <span class="badge">Вам подойдёт</span>
+          <h3>Анализ открытого датасета</h3>
+          <div class="meta">
+            <span>⏱ ~10–15 часов</span>
+            <span>Уровень: новичок</span>
+          </div>
+          <p>
+            Возьмите открытый набор данных (например, о погоде или фильмах) и ответьте
+            на несколько вопросов: какие значения встречаются чаще, есть ли зависимости,
+            как выглядят распределения. Стройте простые графики и делайте выводы.
+          </p>
+          <div class="skills">
+            <strong>Навыки:</strong> таблицы, базовые графики, внимательность к данным.
+            Подойдёт, если вам интересно «разобраться, что в данных».
+          </div>
+        </article>
+
+        <!-- Проект 2 -->
+        <article class="project" id="project-2">
+          <span class="badge">Вам подойдёт</span>
+          <h3>Чат-бот на готовой модели</h3>
+          <div class="meta">
+            <span>⏱ ~15–25 часов</span>
+            <span>Уровень: начинающий</span>
+          </div>
+          <p>
+            Соберите простого чат-бота, который отвечает по заранее заданным правилам
+            или использует готовую небольшую модель. Цель — понять, как устроен диалог,
+            обработка текста и логика ответов.
+          </p>
+          <div class="skills">
+            <strong>Навыки:</strong> основы Python, работа с текстом, логика сценариев.
+            Подойдёт, если вам нравится общение и текстовые задачи.
+          </div>
+        </article>
+
+        <!-- Проект 3 -->
+        <article class="project" id="project-3">
+          <span class="badge">Вам подойдёт</span>
+          <h3>Распознавание изображений</h3>
+          <div class="meta">
+            <span>⏱ ~20–30 часов</span>
+            <span>Уровень: средний старт</span>
+          </div>
+          <p>
+            Используйте готовую модель для классификации простых изображений (например,
+            кошки и собаки на открытом наборе). Разберитесь, как подготовить картинки,
+            как получить предсказание и как оценить качество.
+          </p>
+          <div class="skills">
+            <strong>Навыки:</strong> Python, работа с изображениями, базовые метрики.
+            Подойдёт, если интересно «компьютерное зрение» и вы готовы к чуть большему
+            объёму практики.
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 4: МИНИ-ТЕСТ ============ -->
+  <section id="quiz">
+    <div class="container">
+      <h2>Мини-тест: какой проект выбрать первым</h2>
+      <p class="section-lead">
+        Ответьте на 3 вопроса — тест подскажет один из проектов выше. Все вычисления
+        происходят локально в браузере, данные никуда не отправляются.
+      </p>
+
+      <div class="quiz-box">
+        <form id="quiz-form">
+          <!-- Вопрос 1 -->
+          <div class="quiz-step">
+            <div class="quiz-question">1. Что вам интереснее разбирать?</div>
+            <div class="quiz-options">
+              <label>
+                <input type="radio" name="q1" value="data" required>
+                <span>Таблицы, цифры и закономерности</span>
+              </label>
+              <label>
+                <input type="radio" name="q1" value="text">
+                <span>Текст, диалоги и общение</span>
+              </label>
+              <label>
+                <input type="radio" name="q1" value="image">
+                <span>Картинки и визуальные объекты</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-step">
+            <div class="quiz-question">2. Сколько времени вы готовы уделять проекту?</div>
+            <div class="quiz-options">
+              <label>
+                <input type="radio" name="q2" value="low" required>
+                <span>Небольшими порциями, около 10–15 часов</span>
+              </label>
+              <label>
+                <input type="radio" name="q2" value="mid">
+                <span>Средне, около 15–25 часов</span>
+              </label>
+              <label>
+                <input type="radio" name="q2" value="high">
+                <span>Готов(а) погрузиться на 20–30 часов</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-step">
+            <div class="quiz-question">3. Как вы относитесь к программированию?</div>
+            <div class="quiz-options">
+              <label>
+                <input type="radio" name="q3" value="low" required>
+                <span>Почти не писал(а) код, хочу начать с простого</span>
+              </label>
+              <label>
+                <input type="radio" name="q3" value="mid">
+                <span>Немного пробовал(а), готов(а) писать код</span>
+              </label>
+              <label>
+                <input type="radio" name="q3" value="high">
+                <span>Не боюсь кода и готов(а) разбираться глубже</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="quiz-actions">
+            <button type="submit" class="btn">Показать результат</button>
+            <button type="reset" class="btn btn-secondary" id="quiz-reset">Сбросить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ФУТЕР ============ -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <p>
+          <strong>DataStart</strong> — учебный демонстрационный проект, созданный
+          в образовательных целях. Это не коммерческое предложение и не реклама
+          платных услуг. Все сведения носят нейтральный учебный характер.
+        </p>
+        <p style="margin-top: 0.8rem;">
+          Данные мини-теста обрабатываются только в вашем браузере и никуда не передаются.
+        </p>
+      </div>
+      <a href="#hero" class="to-top">↑ Наверх</a>
+    </div>
+  </footer>
+
+  <!-- ============ JAVASCRIPT: ЛОГИКА МИНИ-ТЕСТА ============ -->
+  <script>
+    (function () {
+      "use strict";
+
+      const form = document.getElementById("quiz-form");
+      const resetBtn = document.getElementById("quiz-reset");
+      const projectCards = {
+        "project-1": document.getElementById("project-1"),
+        "project-2": document.getElementById("project-2"),
+        "project-3": document.getElementById("project-3")
+      };
+
+      // Убираем подсветку со всех карточек
+      function clearHighlights() {
+        Object.values(projectCards).forEach(function (card) {
+          if (card) card.classList.remove("highlight");
+        });
+      }
+
+      // Подсвечиваем подходящую карточку и прокручиваем страницу к ней
+      function showResult(projectId) {
+        clearHighlights();
+        const card = projectCards[projectId];
+        if (card) {
+          card.classList.add("highlight");
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+
+      // Основная логика подбора проекта
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const data = new FormData(form);
+        const q1 = data.get("q1");
+        const q2 = data.get("q2");
+        const q3 = data.get("q3");
+
+        // Проверка: все вопросы должны быть отвечены
+        if (!q1 || !q2 || !q3) {
+          return;
+        }
+
+        // Простая система баллов:
+        // q1: data=1, text=2, image=3
+        // q2: low=1, mid=2, high=3
+        // q3: low=1, mid=2, high=3
+        const scoreMap = { low: 1, mid: 2, high: 3 };
+        const interestMap = { data: 1, text: 2, image: 3 };
+
+        const interest = interestMap[q1] || 2;
+        const timeScore = scoreMap[q2] || 2;
+        const codeScore = scoreMap[q3] || 2;
+
+        // Итоговый балл от 3 до 9
+        const total = interest + timeScore + codeScore;
+
+        let projectId;
+
+        if (total <= 5) {
+          // Наиболее простой и «данные-ориентированный» вариант
+          projectId = "project-1";
+        } else if (total <= 7) {
+          // Средний вариант: чат-бот или анализ — смотрим на интерес
+          projectId = "project-2";
+        } else {
+          // Высокий балл: если интерес к изображениям — проект 3, иначе проект 2 или 3
+          if (q1 === "image") {
+            projectId = "project-3";
+          } else if (q1 === "text") {
+            projectId = "project-2";
+          } else {
+            projectId = "project-3";
+          }
+        }
+
+        showResult(projectId);
+      });
+
+      resetBtn.addEventListener("click", function () {
+        clearHighlights();
+      });
+    })();
+  </script>
+</body>
+</html>
